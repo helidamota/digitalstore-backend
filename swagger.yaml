@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: DigitalStore API
+  description: API REST para loja virtual
+  version: 1.0.0
+  contact:
+    name: DigitalStore Team
+    email: team@digitalstore.com
+
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+
+paths:
+  /health:
+    get:
+      summary: Health Check
+      description: Verifica o status do serviço
+      operationId: healthCheck
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: '2024-01-01T00:00:00Z'
+                  service:
+                    type: string
+                    example: DigitalStore API
+        '500':
+          description: Erro interno
+
+  /products:
+    get:
+      summary: Lista todos os produtos
+      description: Retorna uma lista paginada de produtos ativos
+      operationId: listProducts
+      tags:
+        - Products
+      parameters:
+        - name: page
+          in: query
+          description: Número da página
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Quantidade de itens por página
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Lista de produtos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+                      totalPages:
+                        type: integer
+        '500':
+          description: Erro interno
+
+    post:
+      summary: Cria um novo produto
+      description: Adiciona um novo produto ao estoque
+      operationId: createProduct
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Produto criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Erro de validação
+        '500':
+          description: Erro interno
+
+components:
+  schemas:
+    Product:
+      type: object
+      required:
+        - name
+        - description
+        - price
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '550e8400-e29b-41d4-a716-446655440000'
+        name:
+          type: string
+          example: 'Produto Exemplo'
+        description:
+          type: string
+          example: 'Descrição do produto'
+        price:
+          type: number
+          format: double
+          example: 99.99
+        stock:
+          type: integer
+          example: 100
+        active:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ProductInput:
+      type: object
+      required:
+        - name
+        - description
+        - price
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+          example: 'Produto Exemplo'
+        description:
+          type: string
+          minLength: 10
+          example: 'Descrição detalhada do produto'
+        price:
+          type: number
+          minimum: 0
+          example: 99.99
+        stock:
+          type: integer
+          minimum: 0
+          default: 0
+          example: 100
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security: []

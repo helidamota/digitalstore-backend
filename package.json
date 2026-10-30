@@ -1,0 +1,44 @@
+{
+  "name": "digitalstore-backend",
+  "version": "1.0.0",
+  "description": "Minha loja virtual - API REST",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/server.ts",
+    "build": "tsc",
+    "lint": "eslint 'src/**/*.ts'",
+    "typeorm": "ts-node-dev node_modules/typeorm/cli.js",
+    "migrate": "npm run typeorm migration:run -- -d src/database/data-source.ts",
+    "generate": "npm run typeorm migration:generate --"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "typeorm": "^0.3.20",
+    "mysql2": "^3.9.1",
+    "dotenv": "^16.4.1",
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0",
+    "uuid": "^9.0.1",
+    "class-validator": "^0.14.1",
+    "class-transformer": "^0.5.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.0",
+    "@types/swagger-ui-express": "^4.1.6",
+    "@types/uuid": "^9.0.7",
+    "@types/yamljs": "^0.2.34",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.55.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.2"
+  }
+}
