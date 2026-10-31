@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const { Sequelize } = require('sequelize');
 const config = require('../config/database');
 
 const sequelize = new Sequelize(config.database.name, config.database.user, config.database.password, {
@@ -13,4 +13,13 @@ const sequelize = new Sequelize(config.database.name, config.database.user, conf
     },
 });
 
-module.exports = sequelize;
+// Import models (passing sequelize instance)
+const User = require('./User')(sequelize);
+const Category = require('./Category')(sequelize);
+
+// Export models and sequelize
+module.exports = {
+    sequelize,
+    User,
+    Category,
+};

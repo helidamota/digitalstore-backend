@@ -1,7 +1,7 @@
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-const sequelize = require('./models/index');
+const { sequelize } = require('./models/index');
 const config = require('./config/database');
 
 async function runMigrations() {

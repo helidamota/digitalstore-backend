@@ -1,7 +1,7 @@
 require('dotenv').config();
 const app = require('./app');
 const config = require('./config/database');
-const sequelize = require('./models/index');
+const { sequelize } = require('./models/index');
 
 const port = config.app.port;
 

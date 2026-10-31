@@ -6,11 +6,11 @@ const config = {
         env: process.env.NODE_ENV || 'development',
     },
     database: {
-        host: process.env.DB_HOST || 'host.docker.internal',
-        port: process.env.DB_PORT || 3306,
-        name: process.env.DB_NAME || 'digitalstore',
-        user: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || 'rootpassword',
+        host: process.env.DATABASE_HOST || process.env.DB_HOST || 'host.docker.internal',
+        port: process.env.DATABASE_PORT || process.env.DB_PORT || 3306,
+        name: process.env.DATABASE_NAME || process.env.DB_NAME || 'digitalstore',
+        user: process.env.DATABASE_USER || process.env.DB_USER || 'root',
+        password: process.env.DATABASE_PASSWORD || process.env.DB_PASSWORD || 'rootpassword',
     },
     jwt: {
         secret: process.env.JWT_SECRET || 'default-secret',
