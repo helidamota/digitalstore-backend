@@ -1,8 +1,7 @@
 services:
   app:
-    image: node:20-alpine
+    build: .
     container_name: digitalstore-api
-    working_dir: /app
     ports:
       - "3000:3000"
     environment:
@@ -16,10 +15,6 @@ services:
       - JWT_SECRET=seu-segredo-super-secreto-aqui
     depends_on:
       - mysql
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: sh -c "npm install && npm run dev"
     networks:
       - app-network
 
