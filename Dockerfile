@@ -8,8 +8,8 @@ RUN apk add --no-cache curl
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --omit=dev
+# Install all dependencies (including dev for nodemon)
+RUN npm ci
 
 # Copy source code
 COPY src/ ./src/
