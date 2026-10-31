@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const config = require('../config/database');
 
 const sequelize = new Sequelize(config.database.name, config.database.user, config.database.password, {
@@ -13,15 +13,42 @@ const sequelize = new Sequelize(config.database.name, config.database.user, conf
     },
 });
 
-// Import models (passing sequelize instance)
-const User = require('./User')(sequelize);
-const Category = require('./Category')(sequelize);
-const Product = require('./Product')(sequelize);
+// Import all models
+const User = require('./User')(sequelize, DataTypes);
+const Product = require('./Product')(sequelize, DataTypes);
+const ProductImage = require('./ProductImage')(sequelize, DataTypes);
+const ProductOption = require('./ProductOption')(sequelize, DataTypes);
+const Category = require('./Category')(sequelize, DataTypes);
+const ProductCategory = require('./ProductCategory')(sequelize, DataTypes);
 
-// Export models and sequelize
+// Define associations
+if (ProductOption.associate) {
+    ProductOption.associate(sequelize.models);
+}
+
+if (ProductImage.associate) {
+    ProductImage.associate(sequelize.models);
+}
+
+if (Product.associate) {
+    Product.associate(sequelize.models);
+}
+
+if (Category.associate) {
+    Category.associate(sequelize.models);
+}
+
+if (ProductCategory.associate) {
+    ProductCategory.associate(sequelize.models);
+}
+
 module.exports = {
     sequelize,
+    Sequelize,
     User,
-    Category,
     Product,
+    ProductImage,
+    ProductOption,
+    Category,
+    ProductCategory,
 };
