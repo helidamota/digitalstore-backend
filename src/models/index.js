@@ -16,10 +16,12 @@ const sequelize = new Sequelize(config.database.name, config.database.user, conf
 // Import models (passing sequelize instance)
 const User = require('./User')(sequelize);
 const Category = require('./Category')(sequelize);
+const Product = require('./Product')(sequelize);
 
 // Export models and sequelize
 module.exports = {
     sequelize,
     User,
     Category,
+    Product,
 };
