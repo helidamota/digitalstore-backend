@@ -29,7 +29,3 @@ logs
 # OS
 .DS_Store
 Thumbs.db
-
-# Documentation
-README.md
-docs

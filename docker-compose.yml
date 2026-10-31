@@ -1,9 +1,8 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+    image: node:20-alpine
     container_name: digitalstore-api
+    working_dir: /app
     ports:
       - "3000:3000"
     environment:
@@ -14,13 +13,15 @@ services:
       - DATABASE_NAME=digitalstore
       - DATABASE_USER=root
       - DATABASE_PASSWORD=rootpassword
+      - JWT_SECRET=seu-segredo-super-secreto-aqui
     depends_on:
       - mysql
     volumes:
       - .:/app
       - /app/node_modules
-      - /app/dist
-    command: npm run dev
+    command: sh -c "npm install && npm run dev"
+    networks:
+      - app-network
 
   mysql:
     image: mysql:8.0
@@ -34,6 +35,12 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
 
 volumes:
   mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

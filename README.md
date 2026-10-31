@@ -1,32 +1,42 @@
 # DigitalStore Backend
 
-API REST para loja virtual construída com Node.js, Express, TypeScript e MySQL.
+API REST para loja virtual construída com Node.js, Express, Sequelize e MySQL.
 
 ## 🛠 Tecnologias
 
 - **Framework**: Express.js
-- **Linguagem**: TypeScript
+- **Linguagem**: JavaScript (Node.js)
 - **Banco de Dados**: MySQL
-- **ORM**: TypeORM
+- **ORM**: Sequelize
+- **Autenticação**: JWT
 - **Documentação**: Swagger UI
+- **Testes**: Jest + Supertest
+- **Desenvolvimento**: Nodemon
 - **Containerização**: Docker & Docker Compose
-- **Padrões**: SOLID Principles
 
 ## 📁 Estrutura do Projeto
 
 ```
-src/
-├── app.ts               # Configuração do Express
-├── server.ts            # Ponto de entrada da aplicação
-├── routes/
-│   └── index.ts         # Roteamento principal
-├── modules/
-│   └── health/
-│       └── controllers/
-│           └── HealthController.ts
-├── database/
-│   └── data-source.ts   # Configuração do TypeORM
-└── config/              # Configurações da aplicação
+project-root/
+├── src/
+│   ├── config/          # Configurações da aplicação
+│   ├── controllers/     # Controladores das rotas
+│   ├── middleware/      # Middlewares personalizados
+│   ├── models/          # Models do Sequelize
+│   ├── routes/          # Rotas da API
+│   ├── services/        # Lógica de negócio
+│   ├── app.js           # Configuração do Express
+│   └── server.js        # Ponto de entrada da aplicação
+├── tests/               # Testes automatizados
+├── docker/
+│   └── mysql/
+│       └── init/        # Scripts de inicialização do MySQL
+├── .env                 # Variáveis de ambiente (copiar de .env.example)
+├── .gitignore
+├── docker-compose.yml
+├── Dockerfile
+├── package.json
+└── swagger.yaml
 ```
 
 ## 🚀 Começando
@@ -34,55 +44,52 @@ src/
 ### Pré-requisitos
 
 - Node.js 20+
-- Docker e Docker Compose
-- npm ou yarn
+- Docker e Docker Compose (opcional)
+- npm
 
-### Desenvolvimento
+### Instalação Local
 
 1. Clone o repositório
-2. Copie o arquivo `.env.example` para `.env` e configure as variáveis
-3. Inicie os containers:
+2. Copie o arquivo `.env.example` para `.env` e configure as variáveis:
 
 ```bash
-docker-compose up -d
+cp .env.example .env
 ```
 
-4. Acesse a API em: `http://localhost:3000`
-5. Acesse a documentação Swagger em: `http://localhost:3000/api-docs`
-
-### Comandos Úteis
+3. Instale as dependências:
 
 ```bash
-# Desenvolvimento
+npm install
+```
+
+4. Inicie o MySQL (com Docker ou localmente):
+
+**Com Docker:**
+```bash
+docker-compose up -d mysql
+```
+
+5. Inicie a aplicação em modo de desenvolvimento:
+
+```bash
 npm run dev
-
-# Build
-npm run build
-
-# Executar migrations
-npm run migrate
-
-# Gerar nova migration
-npm run generate
 ```
 
-### Variáveis de Ambiente
+6. Acesse a API em: `http://localhost:3000`
+7. Acesse a documentação Swagger em: `http://localhost:3000/api-docs`
 
+### Executar Testes
+
+```bash
+# Executar todos os testes
+npm test
+
+# Executar testes em modo watch
+npm run test:watch
+
+# Gerar relatório de cobertura
+npm run test:coverage
 ```
-NODE_ENV=development
-PORT=3000
-DATABASE_HOST=mysql
-DATABASE_PORT=3306
-DATABASE_NAME=digitalstore
-DATABASE_USER=root
-DATABASE_PASSWORD=rootpassword
-SWAGGER_ENABLE=true
-SWAGGER_PATH=/api-docs
-```
-
-## 📖 Documentação da API
-
-A documentação interativa está disponível em `/api-docs` quando a aplicação está rodando.
 
 ## 🐳 Docker
 
@@ -110,15 +117,61 @@ docker-compose down
 docker-compose down -v
 ```
 
+### Ver logs
+
+```bash
+docker-compose logs -f
+```
+
+## 📖 Variáveis de Ambiente
+
+Copie `.env.example` para `.env` e configure:
+
+```
+NODE_ENV=development
+PORT=3000
+
+# Database
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=digitalstore
+DB_USER=root
+DB_PASSWORD=rootpassword
+
+# JWT
+JWT_SECRET=seu-segredo-super-secreto-aqui
+JWT_EXPIRES_IN=1d
+
+# Swagger
+SWAGGER_PATH=/api-docs
+```
+
+## 📖 Documentação da API
+
+A documentação interativa está disponível em `/api-docs` quando a aplicação está rodando.
+
+### Endpoints
+
+- `GET /api/health` - Health Check
+
 ## 🧪 Estrutura de Código
 
-O projeto segue os princípios SOLID:
+O projeto segue boas práticas de desenvolvimento:
+- Separação de responsabilidades (MVC)
+- Middlewares para autenticação e tratamento de erros
+- Models com Sequelize para persistência
+- Services para lógica de negócio
+- Testes automatizados com Jest
 
-- **S** - Single Responsibility Principle
-- **O** - Open/Closed Principle  
-- **L** - Liskov Substitution Principle
-- **I** - Interface Segregation Principle
-- **D** - Dependency Inversion Principle
+## 🔒 Autenticação JWT
+
+Para proteger rotas, use o middleware `auth`:
+
+```javascript
+const authMiddleware = require('./middleware/auth');
+
+router.get('/protected', authMiddleware, controller.method);
+```
 
 ## 📄 Licença
 

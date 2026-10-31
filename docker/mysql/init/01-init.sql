@@ -4,9 +4,9 @@ USE digitalstore;
 
 -- Table for products
 CREATE TABLE IF NOT EXISTS products (
-  id CHAR(36) PRIMARY KEY,
+  id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
-  description TEXT,
+  description TEXT NOT NULL,
   price DECIMAL(10,2) NOT NULL,
   stock INT DEFAULT 0,
   active TINYINT(1) DEFAULT 1,
