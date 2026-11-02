@@ -1,4 +1,6 @@
-module.exports = (sequelize, DataTypes) => {
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
     const Category = sequelize.define('Category', {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,

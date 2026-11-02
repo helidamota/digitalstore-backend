@@ -6,10 +6,15 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --omit=dev
+RUN npm ci
 
 # Copy source code and .env
 COPY src/ ./src/
+
+# Copy tests
+COPY tests/ ./tests/
+
+# Copy swagger
 COPY swagger.yaml ./
 COPY .env ./
 
@@ -18,4 +23,3 @@ EXPOSE 3000
 
 # Start the application
 CMD ["npm", "run", "dev"]
-CMD ["node", "src/server.js"]

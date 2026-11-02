@@ -216,14 +216,21 @@ paths:
         '500':
           description: Erro interno
 
-  /products:
+  /v1/category/search:
     get:
-      summary: Lista todos os produtos
-      description: Retorna uma lista paginada de produtos ativos
-      operationId: listProducts
+      summary: Lista categorias com filtros e paginação
+      description: Retorna uma lista de categorias com opções de paginação e filtros
+      operationId: searchCategories
       tags:
-        - Products
+        - Categories
       parameters:
+        - name: limit
+          in: query
+          description: Quantidade de itens por página (use -1 para buscar todos)
+          required: false
+          schema:
+            type: integer
+            default: 12
         - name: page
           in: query
           description: Número da página
@@ -231,13 +238,202 @@ paths:
           schema:
             type: integer
             default: 1
+        - name: fields
+          in: query
+          description: Campos a serem retornados (separados por vírgula)
+          required: false
+          schema:
+            type: string
+            default: name,slug,use_in_menu
+        - name: use_in_menu
+          in: query
+          description: Filtrar apenas categorias que aparecem no menu
+          required: false
+          schema:
+            type: string
+            enum: ['true', 'false']
+      responses:
+        '200':
+          description: Lista de categorias
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+        '400':
+          description: Erro de validação
+        '500':
+          description: Erro interno
+
+  /v1/category/{id}:
+    get:
+      summary: Obter categoria por ID
+      description: Retorna os dados de uma categoria pelo ID
+      operationId: getCategory
+      tags:
+        - Categories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Categoria encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Categoria não encontrada
+        '500':
+          description: Erro interno
+
+    post:
+      summary: Criar nova categoria
+      description: Adiciona uma nova categoria ao sistema
+      operationId: createCategory
+      tags:
+        - Categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '201':
+          description: Categoria criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          description: Erro de validação
+        '401':
+          description: Não autorizado
+        '500':
+          description: Erro interno
+
+    put:
+      summary: Atualizar categoria
+      description: Atualiza os dados de uma categoria pelo ID
+      operationId: updateCategory
+      tags:
+        - Categories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '204':
+          description: Categoria atualizada com sucesso
+        '400':
+          description: Erro de validação
+        '401':
+          description: Não autorizado
+        '404':
+          description: Categoria não encontrada
+        '500':
+          description: Erro interno
+
+    delete:
+      summary: Deletar categoria
+      description: Remove uma categoria pelo ID
+      operationId: deleteCategory
+      tags:
+        - Categories
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Categoria deletada com sucesso
+        '401':
+          description: Não autorizado
+        '404':
+          description: Categoria não encontrada
+        '500':
+          description: Erro interno
+
+  /v1/product/search:
+    get:
+      summary: Lista produtos com filtros e paginação
+      description: Retorna uma lista de produtos com opções de paginação, busca e filtros
+      operationId: searchProducts
+      tags:
+        - Products
+      parameters:
         - name: limit
           in: query
-          description: Quantidade de itens por página
+          description: Quantidade de itens por página (use -1 para buscar todos)
           required: false
           schema:
             type: integer
-            default: 10
+            default: 12
+        - name: page
+          in: query
+          description: Número da página
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: fields
+          in: query
+          description: Campos a serem retornados (separados por vírgula)
+          required: false
+          schema:
+            type: string
+            default: name,images,price
+        - name: match
+          in: query
+          description: Termo de busca para filtrar produtos por nome ou descrição
+          required: false
+          schema:
+            type: string
+        - name: category_ids
+          in: query
+          description: IDs das categorias para filtrar produtos (separados por vírgula)
+          required: false
+          schema:
+            type: string
+        - name: price-range
+          in: query
+          description: Faixa de preço para filtrar produtos (min-max)
+          required: false
+          schema:
+            type: string
+        - name: option[45]
+          in: query
+          description: Filtrar por opções disponíveis
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de produtos
@@ -250,23 +446,46 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Product'
-                  pagination:
-                    type: object
-                    properties:
-                      total:
-                        type: integer
-                      page:
-                        type: integer
-                      limit:
-                        type: integer
-                      totalPages:
-                        type: integer
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  page:
+                    type: integer
+        '400':
+          description: Erro de validação
+        '500':
+          description: Erro interno
+
+  /v1/product/{id}:
+    get:
+      summary: Obter produto por ID
+      description: Retorna os dados de um produto pelo ID
+      operationId: getProduct
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Produto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Produto não encontrado
         '500':
           description: Erro interno
 
     post:
-      summary: Cria um novo produto
-      description: Adiciona um novo produto ao estoque
+      summary: Criar novo produto
+      description: Adiciona um novo produto ao sistema
       operationId: createProduct
       tags:
         - Products
@@ -285,6 +504,62 @@ paths:
                 $ref: '#/components/schemas/Product'
         '400':
           description: Erro de validação
+        '401':
+          description: Não autorizado
+        '500':
+          description: Erro interno
+
+    put:
+      summary: Atualizar produto
+      description: Atualiza os dados de um produto pelo ID
+      operationId: updateProduct
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '204':
+          description: Produto atualizado com sucesso
+        '400':
+          description: Erro de validação
+        '401':
+          description: Não autorizado
+        '404':
+          description: Produto não encontrado
+        '500':
+          description: Erro interno
+
+    delete:
+      summary: Deletar produto
+      description: Remove um produto pelo ID
+      operationId: deleteProduct
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Produto deletado com sucesso
+        '401':
+          description: Não autorizado
+        '404':
+          description: Produto não encontrado
         '500':
           description: Erro interno
 
@@ -356,32 +631,128 @@ components:
           maxLength: 255
           example: 'senha123'
 
-    Product:
+    Category:
       type: object
-      required:
-        - name
-        - description
-        - price
       properties:
         id:
           type: integer
           example: 1
         name:
           type: string
-          example: 'Produto Exemplo'
+          example: 'Shoes'
+        slug:
+          type: string
+          example: 'shoes'
+        use_in_menu:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CategoryInput:
+      type: object
+      required:
+        - name
+        - slug
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 255
+          example: 'Shoes'
+        slug:
+          type: string
+          minLength: 2
+          maxLength: 255
+          example: 'shoes'
+        use_in_menu:
+          type: boolean
+          example: true
+
+    ProductImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        content:
+          type: string
+          format: uri
+          example: 'https://store.com/media/product-01/image-01.png'
+
+    ProductOption:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: 'Cor'
+        shape:
+          type: string
+          example: 'square'
+        radius:
+          type: string
+          example: '4px'
+        type:
+          type: string
+          example: 'text'
+        values:
+          type: array
+          items:
+            type: string
+
+    Product:
+      type: object
+      required:
+        - name
+        - price
+        - price_with_discount
+      properties:
+        id:
+          type: integer
+          example: 1
+        enabled:
+          type: boolean
+          example: true
+        name:
+          type: string
+          example: 'Produto 01'
+        slug:
+          type: string
+          example: 'produto-01'
+        stock:
+          type: integer
+          example: 10
         description:
           type: string
-          example: 'Descrição do produto'
+          example: 'Descrição do produto 01'
         price:
           type: number
           format: double
-          example: 99.99
-        stock:
-          type: integer
-          example: 100
-        active:
-          type: boolean
-          example: true
+          example: 119.90
+        price_with_discount:
+          type: number
+          format: double
+          example: 99.90
+        category_ids:
+          type: array
+          items:
+            type: integer
+          example: [1, 15, 24, 68]
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductImage'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductOption'
         created_at:
           type: string
           format: date-time
@@ -393,24 +764,81 @@ components:
       type: object
       required:
         - name
-        - description
+        - slug
         - price
+        - price_with_discount
       properties:
+        enabled:
+          type: boolean
+          example: true
         name:
           type: string
-          minLength: 3
-          maxLength: 100
-          example: 'Produto Exemplo'
-        description:
+          minLength: 2
+          maxLength: 255
+          example: 'Produto 01'
+        slug:
           type: string
-          minLength: 10
-          example: 'Descrição detalhada do produto'
-        price:
-          type: number
-          minimum: 0
-          example: 99.99
+          minLength: 2
+          maxLength: 255
+          example: 'produto-01'
         stock:
           type: integer
           minimum: 0
           default: 0
+<<<<<<< Updated upstream
           example: 100
+=======
+          example: 10
+        description:
+          type: string
+          maxLength: 1000
+          example: 'Descrição do produto 01'
+        price:
+          type: number
+          minimum: 0
+          example: 119.90
+        price_with_discount:
+          type: number
+          minimum: 0
+          example: 99.90
+        category_ids:
+          type: array
+          items:
+            type: integer
+          example: [1, 15, 24, 68]
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                example: 'image/png'
+              content:
+                type: string
+                example: 'base64 da imagem 1'
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                example: 'Cor'
+              shape:
+                type: string
+                example: 'square'
+              radius:
+                type: string
+                example: '4px'
+              type:
+                type: string
+                example: 'text'
+              values:
+                type: array
+                items:
+                  type: string
+                example: ['PP', 'GG', 'M']
+
+security: []
+>>>>>>> Stashed changes

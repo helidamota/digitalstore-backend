@@ -47,5 +47,21 @@ module.exports = (sequelize) => {
         timestamps: true,
     });
 
+    Product.associate = (models) => {
+        Product.hasMany(models.ProductImage, {
+            foreignKey: 'product_id',
+            as: 'images',
+        });
+        Product.hasMany(models.ProductOption, {
+            foreignKey: 'product_id',
+            as: 'options',
+        });
+        Product.belongsToMany(models.Category, {
+            foreignKey: 'product_id',
+            through: 'product_categories',
+            as: 'categories',
+        });
+    };
+
     return Product;
 };

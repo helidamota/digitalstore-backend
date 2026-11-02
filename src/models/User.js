@@ -1,4 +1,6 @@
-module.exports = (sequelize, DataTypes) => {
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
     const bcrypt = require('bcrypt');
 
     const SALT_ROUNDS = 10;

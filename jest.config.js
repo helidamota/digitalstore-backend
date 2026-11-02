@@ -8,4 +8,6 @@ module.exports = {
     coverageDirectory: 'coverage',
     testMatch: ['**/tests/**/*.test.js'],
     verbose: true,
+    maxWorkers: 1,
+    forceExit: true,
 };
