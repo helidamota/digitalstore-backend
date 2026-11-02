@@ -1,6 +1,4 @@
-const { DataTypes } = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
     const Category = sequelize.define('Category', {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -16,14 +14,23 @@ module.exports = (sequelize) => {
             allowNull: false,
         },
         use_in_menu: {
-            type: DataTypes.TINYINT(1),
-            allowNull: true,
-            defaultValue: 0,
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
         },
     }, {
         tableName: 'categories',
         timestamps: true,
+        underscored: true,
     });
+
+    Category.associate = (models) => {
+        Category.belongsToMany(models.Product, {
+            foreignKey: 'category_id',
+            through: 'product_categories',
+            as: 'products',
+        });
+    };
 
     return Category;
 };
