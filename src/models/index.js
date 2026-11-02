@@ -9,7 +9,6 @@ const sequelize = new Sequelize(config.database.name, config.database.user, conf
     define: {
         timestamps: true,
         underscored: true,
-        underscoredAll: true,
     },
 });
 

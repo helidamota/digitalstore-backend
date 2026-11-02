@@ -3,9 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const routes = require('./routes');
-const errorHandler = require('./middleware/errorHandler');
 const swaggerUi = require('swagger-ui-express');
 const yaml = require('yamljs');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
