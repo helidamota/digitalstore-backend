@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 
-const authMiddleware = (req, res, next) => {
+const validateToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -23,10 +23,11 @@ const authMiddleware = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, config.jwt.secret);
         req.userId = decoded.id;
+        req.userEmail = decoded.email;
         return next();
     } catch (error) {
         return res.status(401).json({ message: 'Token invalid' });
     }
 };
 
-module.exports = authMiddleware;
+module.exports = validateToken;

@@ -8,9 +8,10 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install --omit=dev
 
-# Copy source code
+# Copy source code and .env
 COPY src/ ./src/
 COPY swagger.yaml ./
+COPY .env ./
 
 # Expose port
 EXPOSE 3000

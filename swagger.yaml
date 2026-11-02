@@ -10,6 +10,8 @@ info:
 servers:
   - url: http://localhost:3000/api
     description: Development server
+  - url: http://localhost:3000/v1
+    description: Version 1 API
 
 paths:
   /health:
@@ -39,6 +41,53 @@ paths:
                     example: DigitalStore API
         '500':
           description: Erro interno
+
+  /v1/user/token:
+    post:
+      summary: Gera token JWT
+      description: Autentica usuário e gera token JWT
+      operationId: generateToken
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: 'user@mail.com'
+                password:
+                  type: string
+                  format: password
+                  example: '123@123'
+      responses:
+        '200':
+          description: Token gerado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+        '400':
+          description: Erro de validação ou credenciais inválidas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Invalid email or password'
 
   /users:
     get:
@@ -115,6 +164,8 @@ paths:
       operationId: updateUser
       tags:
         - Users
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -131,6 +182,10 @@ paths:
       responses:
         '200':
           description: Usuário atualizado
+        '400':
+          description: Erro de validação
+        '401':
+          description: Não autorizado
         '404':
           description: Usuário não encontrado
         '500':
@@ -142,6 +197,8 @@ paths:
       operationId: deleteUser
       tags:
         - Users
+      security:
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -152,6 +209,8 @@ paths:
       responses:
         '204':
           description: Usuário deletado com sucesso
+        '401':
+          description: Não autorizado
         '404':
           description: Usuário não encontrado
         '500':
@@ -229,7 +288,15 @@ paths:
         '500':
           description: Erro interno
 
+security: []
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     User:
       type: object
@@ -347,5 +414,3 @@ components:
           minimum: 0
           default: 0
           example: 100
-
-security: []

@@ -1,4 +1,5 @@
 const UserService = require('../services/UserService');
+const validateToken = require('../middleware/validateToken');
 
 class UserController {
     // GET /api/users - Lista todos os usuários
@@ -27,7 +28,7 @@ class UserController {
         }
     }
 
-    // POST /api/users - Cria um novo usuário
+    // POST /api/users - Cria um novo usuário (requer token)
     static async store(req, res) {
         try {
             const { firstname, surname, email, password } = req.body;
@@ -43,7 +44,7 @@ class UserController {
         }
     }
 
-    // PUT /api/users/:id - Atualiza um usuário
+    // PUT /api/users/:id - Atualiza um usuário (requer token)
     static async update(req, res) {
         try {
             const { id } = req.params;
@@ -71,7 +72,7 @@ class UserController {
         }
     }
 
-    // DELETE /api/users/:id - Deleta um usuário
+    // DELETE /api/users/:id - Deleta um usuário (requer token)
     static async destroy(req, res) {
         try {
             const { id } = req.params;

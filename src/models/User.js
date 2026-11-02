@@ -53,5 +53,9 @@ module.exports = (sequelize, DataTypes) => {
         // User can have many products
     };
 
+    User.prototype.comparePassword = async function (password) {
+        return bcrypt.compare(password, this.password);
+    };
+
     return User;
 };
