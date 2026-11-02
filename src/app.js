@@ -15,6 +15,9 @@ app.use(express.json());
 
 // Swagger Documentation
 const swaggerDocument = yaml.load('./swagger.yaml');
+app.get('/swagger.json', (req, res) => {
+    res.json(swaggerDocument);
+});
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes

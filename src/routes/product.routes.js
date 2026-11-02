@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const authMiddleware = require('../middleware/auth');
+const validateToken = require('../middleware/validateToken');
 const { Product, ProductImage, ProductOption, ProductCategory, Category, Sequelize } = require('../models/index');
 
 const productRoutes = Router();
@@ -158,7 +158,7 @@ productRoutes.get('/search', async (req, res) => {
 productRoutes.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         // Validate ID is a positive integer
         const productId = parseInt(id, 10);
         if (isNaN(productId) || productId <= 0 || productId.toString() !== id) {
@@ -195,7 +195,7 @@ productRoutes.get('/:id', async (req, res) => {
 });
 
 // POST /v1/product - Criar novo produto
-productRoutes.post('/', authMiddleware, async (req, res) => {
+productRoutes.post('/', validateToken, async (req, res) => {
     try {
         const {
             enabled,
@@ -263,10 +263,10 @@ productRoutes.post('/', authMiddleware, async (req, res) => {
 });
 
 // PUT /v1/product/:id - Atualizar produto
-productRoutes.put('/:id', authMiddleware, async (req, res) => {
+productRoutes.put('/:id', validateToken, async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         // Validate ID is a positive integer
         const productId = parseInt(id, 10);
         if (isNaN(productId) || productId <= 0 || productId.toString() !== id) {
@@ -401,10 +401,10 @@ productRoutes.put('/:id', authMiddleware, async (req, res) => {
 });
 
 // DELETE /v1/product/:id - Deletar produto
-productRoutes.delete('/:id', authMiddleware, async (req, res) => {
+productRoutes.delete('/:id', validateToken, async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         // Validate ID is a positive integer
         const productId = parseInt(id, 10);
         if (isNaN(productId) || productId <= 0 || productId.toString() !== id) {

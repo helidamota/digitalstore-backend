@@ -785,10 +785,7 @@ components:
           type: integer
           minimum: 0
           default: 0
-<<<<<<< Updated upstream
           example: 100
-=======
-          example: 10
         description:
           type: string
           maxLength: 1000
@@ -841,4 +838,3 @@ components:
                 example: ['PP', 'GG', 'M']
 
 security: []
->>>>>>> Stashed changes
